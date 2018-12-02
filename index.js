@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const client = new Discord.Client();
 const fs = require('fs')
-const {TOKEN} = require('./config')
+const {TOKEN} = require('./config') // Создайте файл config.js в папке с ботом и напишите exports.TOKEN = 'Токен вашего бота.'
 client.login(TOKEN)
 client.owner = '291568379423096832';
 client.on('ready', () => {
