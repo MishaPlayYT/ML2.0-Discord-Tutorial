@@ -1,12 +1,7 @@
 const Discord = require('discord.js')
 exports.run = (client, message, args) => {
     const xp = require('../xp.json')
-    let user;
-    if(message.mentions.users.size === 1) {
-        user = message.mentions.users.first()
-    } else {
-        user = message.author
-    }
+    var user = message.guild.member(message.mentions.users.first()) || message.guild.members.get(args1[1]) || message.guild.member(message.author)
     if(!xp[user.id]) {
         xp[user.id] = {
             level: 1,
