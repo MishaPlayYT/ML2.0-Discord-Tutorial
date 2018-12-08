@@ -1,1 +1,1 @@
-# ML2.0-Discord-Tutorial
+# Discord Bot Tutorial for ML 2.0 | By StavZ
