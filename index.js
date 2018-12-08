@@ -2,6 +2,35 @@ const Discord = require('discord.js')
 const client = new Discord.Client();
 const fs = require('fs')
 const {TOKEN} = require('./config') // Создайте файл config.js в папке с ботом и напишите exports.TOKEN = 'Токен вашего бота.'
+const xp = require('./xp.json')
+
+client.on('message', message => {
+    let addxp = Math.floor(Math.random() * 10) + 5
+    if(!xp[message.author.id]) {
+        xp[message.author.id] = {
+            level: 1,
+            xp: 0
+        }
+    }
+    var currentLevel = xp[message.author.id].level
+    var currentXp = xp[message.author.id].xp
+    var nextLevel = xp[message.author.id].level * 100;
+    xp[message.author.id].xp = currentXp + addxp;
+    if(nextLevel <= xp[message.author.id].xp) {
+        xp[message.author.id].level = currentLevel + 1;
+        var levelUpEmbed = new Discord.RichEmbed()
+        .setAuthor(message.author.username, message.author.avatarURL)
+        .setDescription(`Поздравляю!\nВы получили ${currentLevel + 1} уровень!`)
+        .setColor('RANDOM')
+        .setFooter('XP System | ML 2.0', client.user.avatarURL)
+        message.channel.send(levelUpEmbed)
+    }
+    fs.writeFile("./xp.json", JSON.stringify(xp), (err) => {
+        if(err) {
+            console.log(err)
+        }
+    })
+})
 client.login(TOKEN)
 client.owner = '291568379423096832';
 client.on('ready', () => {
