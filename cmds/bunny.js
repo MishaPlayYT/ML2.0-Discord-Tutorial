@@ -8,5 +8,8 @@ exports.run = (client, message, args) => {
     message.channel.send(bunny)
 }
 exports.help = {
+    guildOnly: false,
+    enabled: true,
+    owner: false,
     name: 'bunny'
 }

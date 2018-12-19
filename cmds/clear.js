@@ -21,5 +21,8 @@ exports.run = (client, message, args) => {
     })
 }
 exports.help = {
+    guildOnly: true,
+    enabled: true,
+    owner: false,
     name: 'clear'
 }

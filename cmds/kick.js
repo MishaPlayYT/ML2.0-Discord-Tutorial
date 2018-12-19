@@ -25,5 +25,8 @@ exports.run = (client, message, args) => {
     message.reply(`Вы успешно кикнули ${kickmember.user.tag}!`)
 }
 exports.help = {
+    guildOnly: true,
+    enabled: true,
+    owner: false,
     name: 'kick'
 }

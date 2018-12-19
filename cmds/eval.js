@@ -28,5 +28,8 @@ exports.run = (client, message, args) => {
 }
 
 exports.help = {
+    guildOnly: false,
+    enabled: true,
+    owner: true,
     name: 'eval'
 }

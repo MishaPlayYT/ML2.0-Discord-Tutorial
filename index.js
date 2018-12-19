@@ -3,7 +3,7 @@ const client = new Discord.Client();
 const fs = require('fs')
 const {TOKEN} = require('./config') // Создайте файл config.js в папке с ботом и напишите exports.TOKEN = 'Токен вашего бота.'
 const xp = require('./xp.json')
-
+const db = require('quick.db')
 client.on('message', message => {
     let addxp = Math.floor(Math.random() * 10) + 5
     if(!xp[message.author.id]) {
@@ -27,7 +27,7 @@ client.on('message', message => {
     }
     fs.writeFile("./xp.json", JSON.stringify(xp), (err) => {
         if(err) {
-            console.log(err)
+            throw err && console.log(err)
         }
     })
 })
@@ -81,18 +81,35 @@ fs.readdir('./cmds/', (err, files) => {
         client.commands.set(props.help.name, props);
     })
 })
+client.on('guildCreate', guild => {
+    db.set(`guild_${guild.id}`, {
+        prefix: '?'
+    })
+})
 client.on('message', message => {
-    let msg = message.content.toLowerCase() || message.content.toUpperCase()
-    if(!msg.startsWith(client.prefix)) return;
-    if(message.author.bot) return;
     if(message.channel.type === 'dm') return;
-    const args = message.content.slice(client.prefix.length).trim().split(/ +/g);
-
+    if(!db.has(`guild_${message.guild.id}.prefix`)) {
+        db.set(`guild_${message.guild.id}`, {
+            prefix: '?'
+        })
+    }
+    var prefix = db.fetch(`guild_${message.guild.id}.prefix`)
+    let msg = message.content.toLowerCase() || message.content.toUpperCase()
+    if(!msg.startsWith(prefix)) return;
+    if(message.author.bot) return;
+    const args = message.content.slice(prefix.length).trim().split(/ +/g);
     let command = args.shift().toLowerCase();
     let cmd;
     if(client.commands.has(command)) {
         cmd = client.commands.get(command) 
     }
     if(!cmd) return;
+    if(cmd.help.enabled === false) {
+        return
+    }
+    if(cmd.help.owner && message.author.id !== client.owner) {
+        message.reply('У вас нет прав!')
+        return
+    }
     cmd.run(client, message, args)
 })

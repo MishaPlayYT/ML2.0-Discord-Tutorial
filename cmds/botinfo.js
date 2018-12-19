@@ -14,5 +14,8 @@ exports.run = (client, message, args) => {
     message.channel.send(embed)
 }
 exports.help = {
+    guildOnly: false,
+    enabled: true,
+    owner: false,
     name: 'botinfo'
 }
