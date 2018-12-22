@@ -1,6 +1,6 @@
 # Discord Bot Tutorial for ML 2.0 | By StavZ
 
- - Как установить quick.db? - 
+ - Как установить quick.db?
 
 • Откройте PowerShell (или коммандную строку) от имени администратора
 
