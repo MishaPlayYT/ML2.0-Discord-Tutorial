@@ -24,6 +24,9 @@ exports.run = (client, message, args) => {
     message.channel.send(embed)
 }
 exports.help = {
+    desc: "Показывает ваш уровень",
+    usage: "rank @User",
+    group: 'general',
     guildOnly: false,
     enabled: true,
     owner: false,

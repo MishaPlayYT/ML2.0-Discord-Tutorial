@@ -8,6 +8,9 @@ exports.run = (client, message, args) => {
     message.channel.send(embed)
 }
 exports.help = {
+    usage: "ping",
+    desc: 'Показывает пинг бота',
+    group: 'general',
     guildOnly: false,
     enabled: true,
     owner: false,
