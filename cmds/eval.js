@@ -1,4 +1,5 @@
 exports.run = (client, message, args) => {
+    const db = require('quick.db')
     const Discord = require('discord.js')
     if(message.author.id !== client.owner) return;
     function clean(text) {

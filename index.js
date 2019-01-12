@@ -4,20 +4,25 @@ const fs = require('fs')
 const {TOKEN} = require('./config') // Создайте файл config.js в папке с ботом и напишите exports.TOKEN = 'Токен вашего бота.'
 const xp = require('./xp.json')
 const db = require('quick.db')
-client.on('message', message => {
+client.on('message', async (message) => {
+    if(message.channel.type === 'dm') return;
+    if(message.author.bot) return;
     let addxp = Math.floor(Math.random() * 10) + 5
-    if(!xp[message.author.id]) {
-        xp[message.author.id] = {
-            level: 1,
-            xp: 0
-        }
+    if(db.has(`level_${message.author.id}.xp`)) {
+        db.add(`level_${message.author.id}.xp`, addxp)
+    } else {
+        db.set(`level_${message.author.id}.xp`, addxp)
     }
-    var currentLevel = xp[message.author.id].level
-    var currentXp = xp[message.author.id].xp
-    var nextLevel = xp[message.author.id].level * 100;
-    xp[message.author.id].xp = currentXp + addxp;
-    if(nextLevel <= xp[message.author.id].xp) {
-        xp[message.author.id].level = currentLevel + 1;
+    if(!db.has(`level_${message.author.id}.level`)) {
+        db.set(`level_${message.author.id}`, 1)
+    }
+    var xp = db.fetch(`level_${message.author.id}.xp`)
+    var level = db.fetch(`level_${message.author.id}.level`)
+    var currentLevel = level
+    var currentXp = xp
+    var nextLevel = level * 100;
+    if(nextLevel <= xp) {
+        await db.add(`level_${message.author.id}.level`, 1)
         var levelUpEmbed = new Discord.RichEmbed()
         .setAuthor(message.author.username, message.author.avatarURL)
         .setDescription(`Поздравляю!\nВы получили ${currentLevel + 1} уровень!`)
@@ -25,11 +30,6 @@ client.on('message', message => {
         .setFooter('XP System | ML 2.0', client.user.avatarURL)
         message.channel.send(levelUpEmbed)
     }
-    fs.writeFile("./xp.json", JSON.stringify(xp), (err) => {
-        if(err) {
-            throw err && console.log(err)
-        }
-    })
 })
 client.login(TOKEN)
 client.owner = '291568379423096832';

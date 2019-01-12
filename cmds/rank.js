@@ -1,23 +1,16 @@
 const Discord = require('discord.js')
 exports.run = (client, message, args) => {
-    const xp = require('../xp.json')
+    const db = require('quick.db')
+    var args1 = message.content.split(' ')
     var user = message.guild.member(message.mentions.users.first()) || message.guild.members.get(args1[1]) || message.guild.member(message.author)
-    if(!xp[user.id]) {
-        xp[user.id] = {
-            level: 1,
-            xp: 0
-        }
-    }
-    var currentLevel = xp[user.id].level
-    var currentXp = xp[user.id].xp
-    var nextLevel = xp[user.id].level * 100;
+    var currentLevel = db.fetch(`level_${user.id}.level`)
+    var currentXp = db.fetch(`level_${user.id}.xp`)
+    var nextLevel = currentLevel * 100;
     var xpToNextLevel = (currentLevel * 100) - currentXp
-    var userlevel = xp[user.id].level
-    var userxp = xp[user.id].xp
     var embed = new Discord.RichEmbed()
-    .setAuthor(user.username, user.avatarURL)
-    .addField('Уровень', userlevel, true)
-    .addField('Опыт', userxp, true)
+    .setAuthor(user.user.username, user.user.avatarURL)
+    .addField('Уровень', currentLevel, true)
+    .addField('Опыт', currentXp, true)
     .addField('Опыта до следующего уровня', xpToNextLevel, true)
     .setColor('RANDOM')
     .setFooter('XP System | ML 2.0', client.user.avatarURL)
