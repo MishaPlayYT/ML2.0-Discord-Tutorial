@@ -1,5 +1,6 @@
 
-config.js
-xp.json
+/config.js
 xp.json
 json.sqlite
+node_modules/
+.idea/

@@ -2,7 +2,6 @@ const Discord = require('discord.js')
 const client = new Discord.Client();
 const fs = require('fs')
 const {TOKEN} = require('./config') // Создайте файл config.js в папке с ботом и напишите exports.TOKEN = 'Токен вашего бота.'
-const xp = require('./xp.json')
 const db = require('quick.db')
 client.on('message', async (message) => {
     if(message.channel.type === 'dm') return;
@@ -38,13 +37,41 @@ client.on('ready', () => {
     client.user.setActivity('ML tutorials', {type: 'WATCHING'})
 })
 client.on('guildMemberAdd', member => {
-    var channel = member.guild.channels.get('509568629243641868')
-    channel.send(`Поприветствуем нового участника ${member} на сервере ${member.guild.name}`)
-    member.send(`Добро пожаловать на наш сервер!`)
+    var guild = member.guild
+    var welcomemessage = db.fetch(`guild_${guild.id}.welcomemessage`)
+    var channel = db.fetch(`guild_${guild.id}.channel`)
+    if(!welcomemessage || welcomemessage === 'None') {
+    }
+    else {
+        if(!guild.channels.get(channel)) return;
+    else {
+        try {
+            guild.channels.get(channel).send(welcomemessage.replace('member', member).replace('guild', guild.name))
+        } catch (e) {
+            throw e
+        }
+        }
+    }
+    // var channel = member.guild.channels.get('509568629243641868')
+    // channel.send(`Поприветствуем нового участника ${member} на сервере ${member.guild.name}`)
+    // member.send(`Добро пожаловать на наш сервер!`)
 })
 client.on('guildMemberRemove', member => {
-    var channel = member.guild.channels.get('509568629243641868')
-    channel.send(`Прощай ${member.user.tag} с нащего сервера :(`)
+    var guild = member.guild
+    var leavemessage = db.fetch(`guild_${guild.id}.leavemessage`)
+    var channel = db.fetch(`guild_${guild.id}.channel`)
+    if(!leavemessage || leavemessage === 'None') {
+    }
+    else {
+        if(!guild.channels.get(channel)) return;
+        else {
+            try {
+                guild.channels.get(channel).send(leavemessage.replace('member', member.user.tag).replace('guild', guild.name))
+            } catch (e) {
+                throw e
+            }
+        }
+    }
 })
 client.on('messageDelete', message => {
     if(message.author.bot) return;
